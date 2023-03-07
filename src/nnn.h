@@ -120,6 +120,7 @@ enum action {
 #ifndef NOMOUSE
 	SEL_CLICK,
 #endif
+	SEL_YANK,  // Kanon added
 };
 
 /* Associate a pressed key to an action */
@@ -286,4 +287,5 @@ static struct key bindings[] = {
 #ifndef NOMOUSE
 	{ KEY_MOUSE,      SEL_CLICK },
 #endif
+	{ 'y',            SEL_YANK },  // Kanon added
 };

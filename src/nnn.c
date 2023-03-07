@@ -5077,7 +5077,7 @@ static void show_help(const char *path)
 	       "9p ^P  Copy here%-12cw ^W  Cp/mv sel as\n"
 	       "9v ^V  Move here%-15cE  Edit sel list\n"
 	       "9x ^X  Delete%-18cS  Listed sel size\n"
-		"aEsc  Send to FIFO\n"
+		"aEsc  Send to FIFO%-12cy  Yank path to clipboard\n"
 	"0\n"
 	"1MISC\n"
 	      "8Alt ;  Select plugin%-11c=  Launch app\n"
@@ -7920,6 +7920,16 @@ nochange:
 				goto nochange;
 			cd = FALSE;
 			goto begin;
+		case SEL_YANK:  // Kanon added
+			if (ndents) {  // I think ndents in number of items (i.e. files and dirs), so this checks if there are any
+				tmp = (listpath && xstrcmp(path, listpath) == 0) ? listroot : path;
+				mkpath(tmp, pdents[cur].name, newpath);  // I think this fills newpath with the current path
+				char *cmd_base = "echo -n '%s' | xsel -b";
+				char *command = malloc(sizeof(char) * (strlen(newpath) + strlen(cmd_base)));
+				sprintf(command, cmd_base, newpath);
+				system(command);  // Just use system call, bypassing plugin call ok?
+			}
+			break;  // I've also seen goto nochange and goto begin
 		case SEL_QUITCTX: // fallthrough
 		case SEL_QUITCD: // fallthrough
 		case SEL_QUIT:
